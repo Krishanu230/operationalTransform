@@ -1,6 +1,58 @@
 "use strict";
 exports.__esModule = true;
+exports.InputFilesType = void 0;
+var InputFilesType = /** @class */ (function () {
+    function InputFilesType(init) {
+        this.video = undefined;
+        this.audio = undefined;
+        this.image = undefined;
+        this.other = undefined;
+        Object.assign(this, init);
+    }
+    return InputFilesType;
+}());
+exports.InputFilesType = InputFilesType;
+function evaluateInsert(state, op) {
+    console.log("Insert");
+    if (op.type === 'image')
+        state.image.push(op.fileObj);
+    else if (op.type === 'audio')
+        state.audio.push(op.fileObj);
+    else if (op.type === 'video')
+        state.video.push(op.fileObj);
+    else if (op.type === 'other')
+        state.other.push(op.fileObj);
+    else
+        return false;
+    return true;
+}
+function evaluateDelete(state, op) {
+    console.log("Delete");
+    return true;
+}
+function evaluateMove(state, op) {
+    console.log("Move");
+    return true;
+}
+function evaluate(state, op) {
+    if (op.state === 'Insert')
+        return evaluateInsert(state, op);
+    if (op.state === 'Delete')
+        return evaluateDelete(state, op);
+    if (op.state === 'Move')
+        return evaluateMove(state, op);
+    else
+        return false;
+}
 function isValid(stale, latest, transform) {
+    initialState: new InputFilesType(stale);
+    transform.forEach(function (element) {
+        //  evaluate(stale,element);
+        /*console.log(stale.video.toString());
+        console.log(stale.audio.toString());
+        console.log(stale.image.toString());
+        console.log(stale.other.toString());*/
+    });
 }
 isValid({
     video: [

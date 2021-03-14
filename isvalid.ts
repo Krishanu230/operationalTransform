@@ -13,18 +13,64 @@ export type FileWithMetadata = {
   customType: FileTypes
 }
 
-export type InputFilesType = {
-  video?: FileWithMetadata[]
-  audio?: FileWithMetadata[]
-  image?: FileWithMetadata[]
-  other?: FileWithMetadata[]
-}
+export class InputFilesType {
+  video: FileWithMetadata[] | undefined = undefined;
+  audio: FileWithMetadata[] | undefined = undefined;
+  image: FileWithMetadata[] | undefined = undefined;
+  other: FileWithMetadata[] | undefined = undefined;
 
+  constructor(init: Partial<InputFilesType>) {
+    Object.assign(this, init);
+  }
+}
+function evaluateInsert(state:InputFilesType, op:FileTransformType): boolean {
+    console.log("Insert");
+    if (op.type === 'image'){
+      if (state.image !== undefined) state.image.push(op.fileObj)
+      else state.image  = [op.fileObj]
+    }
+    else if (op.type === 'audio'){
+      if (state.audio !== undefined) state.audio.push(op.fileObj)
+      else state.audio  = [op.fileObj]
+    }
+    else if (op.type === 'video'){
+      if (state.video !== undefined) state.video.push(op.fileObj)
+      else state.video  = [op.fileObj]
+    }
+    else if (op.type === 'other'){
+      if (state.other !== undefined) state.other.push(op.fileObj)
+      else state.other  = [op.fileObj]
+    }
+    else return false
+    return true
+}
+function evaluateDelete(state:InputFilesType, op:FileTransformType): boolean {
+    console.log("Delete");
+    return true
+}
+function evaluateMove(state:InputFilesType, op:FileTransformType): boolean {
+    console.log("Move");
+    return true
+}
+function evaluate(state:InputFilesType, op:FileTransformType): boolean {
+    if (op.state === 'Insert') return evaluateInsert(state, op)
+    if (op.state === 'Delete') return evaluateDelete(state, op)
+    if (op.state === 'Move') return evaluateMove(state, op)
+    else return false
+}
 function isValid(
   stale,
   latest,
   transform
 ) {
+  initialState : new InputFilesType(stale);
+  transform.forEach(element => {
+    evaluate(stale,element);
+    console.log(stale.video);
+    console.log(stale.audio);
+    console.log(stale.image);
+    console.log(stale.other);
+  });
 }
 
 isValid(
